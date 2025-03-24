@@ -8,12 +8,13 @@ const Homepage = () => {
 
     return (
         <>
-            <Header title="Homepage" />
+            <Header title="WELCOME TO SHIBUYA" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg text-center">
                         <Link href="/gamepages">Start the Game!</Link>
                     </div>
+                    <img className="mx-auto" src="/shibuya-intro.jpg" />
                 </div>
             </div>
         </>
