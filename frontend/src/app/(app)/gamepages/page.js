@@ -4,7 +4,7 @@ import Link from 'next/link';
 const StartPage = () => {
     return (
         <div>
-            <Link href="gamepages/test">go to page 2</Link>
+            <Link href="gamepages/shibuya_station">Start the Game</Link>
         </div>
     );
 };
