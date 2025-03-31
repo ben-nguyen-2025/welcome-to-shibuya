@@ -19,9 +19,9 @@ const Homepage = () => {
                             Start the Game!
                         </Link>
                     </div>
-                    <img className="mx-auto" src="/shibuya-intro.jpg" />
                 </div>
             </div>
+            <img className="mx-auto" src="/shibuya-intro.jpg" />
         </>
     );
 };

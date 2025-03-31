@@ -7,6 +7,7 @@ const StartPage = () => {
     const [count, setCount] = React.useState(0);
 
     return (
+<<<<<<< HEAD
         <>
             <Header title="PAGE 2" />
             <div className="py-12">
@@ -23,6 +24,11 @@ const StartPage = () => {
                 </div>
             </div>
         </>
+=======
+        <div>
+            <Link href="gamepages/shibuya_station">Start the Game</Link>
+        </div>
+>>>>>>> 9b47fa8cc231b2ac905e29ec750cc3b2f86b4147
     );
 };
 export default StartPage;
