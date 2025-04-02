@@ -1,43 +1,107 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
-const introPage = () => {
-    var canLoad = true;
-    //NOTE: put the script for a screen line-by-line here. we can figure out how to
-    //adjust based on choices tomorrow
-    const [text, setText] = useState([
-        'You open your eyes, you feel the shaking of the train car.The familiar chime of the train informing you that you are nearing your destination',
-        '"We will soon arrive at Shibuya, IN-01. This is the last station of this line. Please change trains here for the JR Line, the Tokyu Line, and the Subway Line. The doors on the right side will open, thank you for using the Keio Inokashira Line"',
-        'The train juts to a stop and people begin rushing off. Caught up in the wave of people, you find yourself forcibly ushered out onto the platform. After gathering yourself you decide to check your things.',
-    ]);
-    const [index, setIndex] = useState(0);
 
-    useEffect(() => {
-        document.addEventListener('keydown', moveText, true);
-    }, []);
+const story = {
+    start: {
+        text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
+        choices: {
+            backpack: { next: 'check_backpack' },
+            wallet: { next: 'check_wallet' },
+        },
+    },
+    check_backpack: {
+        text: "From your back you swing around a large bag, searching it you find a balled up sweater, a water bottle and your wallet. You yank the hoodie out of your bag, quickly pulling it over your head. The familiar weight of the fabric settles around you, you take a deep breath and for a brief moment you can't help but feel a slight sense of comfort from the old thing.",
+        choices: {
+            // 'check wallet': {
+            //     next: 'sword_collected',
+            //     effect: { addItem: 'sword' },
+            // },
+            'check wallet': { next: 'check_wallet' },
+        },
+    },
+    check_wallet: {
+        text: 'Opening your wallet you find 5000 yen, your debit card, and your residence/school id cards.',
+        choices: {
+            continue: {
+                next: 'start_with_wallet',
+                effect: { addItem: '5000 yen' },
+            },
+        },
+    },
+    start_with_wallet: {
+        text: 'You decide to check your pockets...',
+        choices: {
+            continue: { next: 'realize_no_money' },
+        },
+    },
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
+        },
+    },
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
+        },
+    },
+    exit_the_station: {
+        text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
+        choices: {
+            'Go West (Hachiko)': {
+                next: '',
+                effect: { movePage: 'hachiko' },
+            },
+            'Go North (Meiji Jingu)': { next: '' },
+            'Go East (Tokyo Tower)': { next: '' },
+        },
+    },
+    cry_game_over: {
+        text: 'you keep crying and crying and eventually you waste your whole day doing nothing. Game Over.',
+        choices: {
+            restart: { next: 'start' },
+        },
+    },
+};
 
-    const moveText = e => {
-        console.log('clicked key: ' + e.key);
-        if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
-            //console.log('go forwards');
-            setIndex(index => {
-                if (index < text.length - 1) {
-                    return index + 1;
-                }
-                return index;
-            });
-        }
-        if (e.key == 'ArrowLeft') {
-            //console.log('go backwards');
-            setIndex(index => {
-                if (index > 0) {
-                    return index - 1;
-                }
-                return index;
-            });
-        }
-    };
+function TextAdventure() {
+    const router = useRouter();
+    const [currentNode, setCurrentNode] = useState('start');
+    const [inventory, setInventory] = useState([]); // Inventory state
+    // const [index, setIndex] = useState(0);
+    // useEffect(() => {
+    //     document.addEventListener('keydown', moveText, true);
+    // }, []);
+
+    // const moveText = e => {
+    //     console.log('clicked key: ' + e.key);
+    //     if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
+    //         //console.log('go forwards');
+    //         setIndex(index => {
+    //             if (index < text.length - 1) {
+    //                 return index + 1;
+    //             }
+    //             return index;
+    //         });
+    //     }
+    //     if (e.key == 'ArrowLeft') {
+    //         //console.log('go backwards');
+    //         setIndex(index => {
+    //             if (index > 0) {
+    //                 return index - 1;
+    //             }
+    //             return index;
+    //         });
+    //     }
+    // };
 
     const handleChoice = choice => {
         const nextNode = story[currentNode].choices[choice];
@@ -48,7 +112,14 @@ const introPage = () => {
             ]);
         }
 
-        setCurrentNode(nextNode.next);
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
+        if (nextNode.next) {
+            setCurrentNode(nextNode.next);
+        }
     };
 
     return (
