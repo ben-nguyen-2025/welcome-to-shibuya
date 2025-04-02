@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+
 const story = {
     start: {
         text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
@@ -76,7 +77,6 @@ function TextAdventure() {
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]); // Inventory state
     // const [index, setIndex] = useState(0);
-
     // useEffect(() => {
     //     document.addEventListener('keydown', moveText, true);
     // }, []);
@@ -160,6 +160,6 @@ function TextAdventure() {
             </div>
         </div>
     );
-}
+};
 export default TextAdventure;
 // export default introPage;
