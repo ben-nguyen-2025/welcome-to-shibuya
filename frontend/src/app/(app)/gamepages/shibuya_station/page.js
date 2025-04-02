@@ -9,7 +9,7 @@ const introPage = () => {
     const [text, setText] = useState([
         'You open your eyes, you feel the shaking of the train car.The familiar chime of the train informing you that you are nearing your destination',
         '"We will soon arrive at Shibuya, IN-01. This is the last station of this line. Please change trains here for the JR Line, the Tokyu Line, and the Subway Line. The doors on the right side will open, thank you for using the Keio Inokashira Line"',
-        'The train juts to a stop and people begin rushing off. Caught up in the wave of people, you find yourself forcibly ushered out onto the platform. After gathering yourself you decide to check your things.',
+        'The train just to a stop and people begin rushing off. Caught up in the wave of people, you find yourself forcibly ushered out onto the platform. After gathering yourself you decide to check your things.',
     ]);
     const [index, setIndex] = useState(0);
 
