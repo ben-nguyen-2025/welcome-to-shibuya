@@ -1,69 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-
-// const introPage = () => {
-//     var canLoad = true;
-//     //NOTE: put the script for a screen line-by-line here. we can figure out how to
-//     //adjust based on choices tomorrow
-//     const [text, setText] = useState([
-//         'You open your eyes, you feel the shaking of the train car.The familiar chime of the train informing you that you are nearing your destination',
-//         '"We will soon arrive at Shibuya, IN-01. This is the last station of this line. Please change trains here for the JR Line, the Tokyu Line, and the Subway Line. The doors on the right side will open, thank you for using the Keio Inokashira Line"',
-//         'The train juts to a stop and people begin rushing off. Caught up in the wave of people, you find yourself forcibly ushered out onto the platform. After gathering yourself you decide to check your things.',
-//         '*1. Check pockets *2. Check backpack',
-//     ]);
-//     const [index, setIndex] = useState(0);
-//     const [questionIndex] = useState([3]);
-
-// useEffect(() => {
-//     document.addEventListener('keydown', moveText, true);
-// }, []);
-
-// const moveText = e => {
-//     console.log('clicked key: ' + e.key);
-//     if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
-//         //console.log('go forwards');
-//         setIndex(index => {
-//             if (index < text.length - 1) {
-//                 return index + 1;
-//             }
-//             return index;
-//         });
-//     }
-//     if (e.key == 'ArrowLeft') {
-//         //console.log('go backwards');
-//         setIndex(index => {
-//             if (index > 0) {
-//                 return index - 1;
-//             }
-//             return index;
-//         });
-//     }
-
-//         if (index == 3) {
-//             //make a choice
-//             //4 is pocket, 5 is backpack
-//         }
-//         //choices will be represented by number when they pop up in the screen
-//     };
-
-//     return (
-//         <div className="relative">
-//             <h1 className="bg-white overflow-hidden shadow-sm sm:rounded-lg text-center font-bold">
-//                 Shibuya Station
-//             </h1>
-// <img
-//     className="w-full h-full inset-0 object-cover object-top"
-//     src="/subway.png"
-// />
-//             <div>
-//                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-10 p-2">
-//                     {text[index]}
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
 
 const story = {
     start: {
@@ -86,52 +24,84 @@ const story = {
     check_wallet: {
         text: 'Opening your wallet you find 5000 yen, your debit card, and your residence/school id cards.',
         choices: {
-            continue: { next: 'start', effect: { addItem: '5000 yen' } },
+            continue: {
+                next: 'start_with_wallet',
+                effect: { addItem: '5000 yen' },
+            },
         },
     },
-    stay_here: {
-        text: 'You stay put and wait. After a while, you hear something approaching...',
+    start_with_wallet: {
+        text: 'You decide to check your pockets...',
         choices: {
-            run: { next: 'explore_forest' },
-            hide: { next: 'game_over' },
+            continue: { next: 'realize_no_money' },
         },
     },
-    game_over: {
-        text: 'You were caught by a wild beast. Game Over.',
-        choices: {},
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
+        },
+    },
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
+        },
+    },
+    exit_the_station: {
+        text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
+        choices: {
+            'Go West (Hachiko)': {
+                next: '',
+                effect: { movePage: 'hachiko' },
+            },
+            'Go North (Meiji Jingu)': { next: '' },
+            'Go East (Tokyo Tower)': { next: '' },
+        },
+    },
+    cry_game_over: {
+        text: 'you keep crying and crying and eventually you waste your whole day doing nothing. Game Over.',
+        choices: {
+            restart: { next: 'start' },
+        },
     },
 };
 
 function TextAdventure() {
+    const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]); // Inventory state
-    const [index, setIndex] = useState(0);
+    // const [index, setIndex] = useState(0);
 
-    useEffect(() => {
-        document.addEventListener('keydown', moveText, true);
-    }, []);
+    // useEffect(() => {
+    //     document.addEventListener('keydown', moveText, true);
+    // }, []);
 
-    const moveText = e => {
-        console.log('clicked key: ' + e.key);
-        if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
-            //console.log('go forwards');
-            setIndex(index => {
-                if (index < text.length - 1) {
-                    return index + 1;
-                }
-                return index;
-            });
-        }
-        if (e.key == 'ArrowLeft') {
-            //console.log('go backwards');
-            setIndex(index => {
-                if (index > 0) {
-                    return index - 1;
-                }
-                return index;
-            });
-        }
-    };
+    // const moveText = e => {
+    //     console.log('clicked key: ' + e.key);
+    //     if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
+    //         //console.log('go forwards');
+    //         setIndex(index => {
+    //             if (index < text.length - 1) {
+    //                 return index + 1;
+    //             }
+    //             return index;
+    //         });
+    //     }
+    //     if (e.key == 'ArrowLeft') {
+    //         //console.log('go backwards');
+    //         setIndex(index => {
+    //             if (index > 0) {
+    //                 return index - 1;
+    //             }
+    //             return index;
+    //         });
+    //     }
+    // };
 
     const handleChoice = choice => {
         const nextNode = story[currentNode].choices[choice];
@@ -142,7 +112,14 @@ function TextAdventure() {
             ]);
         }
 
-        setCurrentNode(nextNode.next);
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
+        if (nextNode.next) {
+            setCurrentNode(nextNode.next);
+        }
     };
 
     return (
