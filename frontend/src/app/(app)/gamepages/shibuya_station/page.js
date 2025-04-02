@@ -15,30 +15,30 @@ import React from 'react';
 //     const [index, setIndex] = useState(0);
 //     const [questionIndex] = useState([3]);
 
-//     useEffect(() => {
-//         document.addEventListener('keydown', moveText, true);
-//     }, []);
+// useEffect(() => {
+//     document.addEventListener('keydown', moveText, true);
+// }, []);
 
-//     const moveText = e => {
-//         console.log('clicked key: ' + e.key);
-//         if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
-//             //console.log('go forwards');
-//             setIndex(index => {
-//                 if (index < text.length - 1) {
-//                     return index + 1;
-//                 }
-//                 return index;
-//             });
-//         }
-//         if (e.key == 'ArrowLeft') {
-//             //console.log('go backwards');
-//             setIndex(index => {
-//                 if (index > 0) {
-//                     return index - 1;
-//                 }
-//                 return index;
-//             });
-//         }
+// const moveText = e => {
+//     console.log('clicked key: ' + e.key);
+//     if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
+//         //console.log('go forwards');
+//         setIndex(index => {
+//             if (index < text.length - 1) {
+//                 return index + 1;
+//             }
+//             return index;
+//         });
+//     }
+//     if (e.key == 'ArrowLeft') {
+//         //console.log('go backwards');
+//         setIndex(index => {
+//             if (index > 0) {
+//                 return index - 1;
+//             }
+//             return index;
+//         });
+//     }
 
 //         if (index == 3) {
 //             //make a choice
@@ -105,6 +105,33 @@ const story = {
 function TextAdventure() {
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]); // Inventory state
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        document.addEventListener('keydown', moveText, true);
+    }, []);
+
+    const moveText = e => {
+        console.log('clicked key: ' + e.key);
+        if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
+            //console.log('go forwards');
+            setIndex(index => {
+                if (index < text.length - 1) {
+                    return index + 1;
+                }
+                return index;
+            });
+        }
+        if (e.key == 'ArrowLeft') {
+            //console.log('go backwards');
+            setIndex(index => {
+                if (index > 0) {
+                    return index - 1;
+                }
+                return index;
+            });
+        }
+    };
 
     const handleChoice = choice => {
         const nextNode = story[currentNode].choices[choice];
