@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const story = {
@@ -39,7 +40,7 @@ const story = {
         text: 'You realize you lost your phone! What are you going to do?',
         choices: {
             'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'realize_no_money' },
+            'exit the station': { next: 'exit_station' },
             cry: { next: 'cry_game_over' },
         },
     },
@@ -78,6 +79,7 @@ const story = {
 };
 
 function TextAdventure() {
+    const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]); // Inventory state
     // const [index, setIndex] = useState(0);
@@ -117,7 +119,14 @@ function TextAdventure() {
             ]);
         }
 
-        setCurrentNode(nextNode.next);
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
+        if (nextNode.next) {
+            setCurrentNode(nextNode.next);
+        }
     };
 
     return (
