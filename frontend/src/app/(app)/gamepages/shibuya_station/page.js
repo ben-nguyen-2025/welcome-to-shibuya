@@ -40,7 +40,7 @@ const story = {
         text: 'You realize you lost your phone! What are you going to do?',
         choices: {
             'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_station' },
+            'exit the station': { next: 'exit_the_station' },
             cry: { next: 'cry_game_over' },
         },
     },
@@ -55,19 +55,32 @@ const story = {
     persuade_officer: {
         text: 'You try and persuade the officer to have someone bring it back to the station with tears in your eyes, he looks at you with a that anyone with a set of eyes could tell he was uncomfortable but in the end he agrees and someone should have the phone back to the station by the end of the day IF they find it.',
         choices: {
-            'Exit the station': { next: 'exit_station' },
+            'Exit the station': { next: 'exit_the_station' },
         },
     },
     bribe_officer: {
         text: 'you try to hand persuade the officer with what little money you have, he takes one good looks at it and laughs, leaving you off with a warning to never do that again.',
         choices: {
-            'Exit the station': { next: 'exit_station' },
+            'Exit the station': { next: 'exit_the_station' },
         },
     },
-    exit_station: {
-        text: 'without a phone but still with a full day ahead of you, you decide to exit the station into the special ward of Shibuya.',
+  exit_the_station: {
+        text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
         choices: {
-            'Exit the station': { next: 'exit_station' },
+            'Go West (Hachiko)': {
+                next: '',
+                effect: { movePage: 'hachiko' },
+            },
+            'Go North (Meiji Jingu)': { next: '' },
+            'Go East (Tokyo Tower)': { next: '' },
+        },
+    },
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
         },
     },
     cry_game_over: {
@@ -81,7 +94,28 @@ const story = {
 function TextAdventure() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
-    const [inventory, setInventory] = useState([]); // Inventory state
+    const [inventory, setInventory] = useState([]);
+
+    const handleChoice = choice => {
+        const nextNode = story[currentNode].choices[choice];
+
+        if (nextNode.effect?.addItem) {
+            setInventory(prev => [
+                ...new Set([...prev, nextNode.effect.addItem]),
+            ]);
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
+        if (nextNode.next) {
+            setCurrentNode(nextNode.next);
+        }
+    };
+
+    // Inventory state
     // const [index, setIndex] = useState(0);
 
     // useEffect(() => {
@@ -109,25 +143,6 @@ function TextAdventure() {
     //         });
     //     }
     // };
-
-    const handleChoice = choice => {
-        const nextNode = story[currentNode].choices[choice];
-
-        if (nextNode.effect?.addItem) {
-            setInventory(prev => [
-                ...new Set([...prev, nextNode.effect.addItem]),
-            ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
-        }
-
-        if (nextNode.next) {
-            setCurrentNode(nextNode.next);
-        }
-    };
 
     return (
         <div className="p-4">
