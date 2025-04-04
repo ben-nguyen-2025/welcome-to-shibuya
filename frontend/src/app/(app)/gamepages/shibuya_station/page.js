@@ -44,14 +44,6 @@ const story = {
             cry: { next: 'cry_game_over' },
         },
     },
-    realize_no_money: {
-        text: 'You realize you lost your phone! What are you going to do?',
-        choices: {
-            'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_the_station' },
-            cry: { next: 'cry_game_over' },
-        },
-    },
     exit_the_station: {
         text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
         choices: {
@@ -61,6 +53,14 @@ const story = {
             },
             'Go North (Meiji Jingu)': { next: '' },
             'Go East (Tokyo Tower)': { next: '' },
+        },
+    },
+    realize_no_money: {
+        text: 'You realize you lost your phone! What are you going to do?',
+        choices: {
+            'talk to authorities': { next: 'talk_to_authorities' },
+            'exit the station': { next: 'exit_the_station' },
+            cry: { next: 'cry_game_over' },
         },
     },
     cry_game_over: {
@@ -74,7 +74,28 @@ const story = {
 function TextAdventure() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
-    const [inventory, setInventory] = useState([]); // Inventory state
+    const [inventory, setInventory] = useState([]);
+
+    const handleChoice = choice => {
+        const nextNode = story[currentNode].choices[choice];
+
+        if (nextNode.effect?.addItem) {
+            setInventory(prev => [
+                ...new Set([...prev, nextNode.effect.addItem]),
+            ]);
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
+        if (nextNode.next) {
+            setCurrentNode(nextNode.next);
+        }
+    };
+
+    // Inventory state
     // const [index, setIndex] = useState(0);
     // useEffect(() => {
     //     document.addEventListener('keydown', moveText, true);
@@ -101,25 +122,6 @@ function TextAdventure() {
     //         });
     //     }
     // };
-
-    const handleChoice = choice => {
-        const nextNode = story[currentNode].choices[choice];
-
-        if (nextNode.effect?.addItem) {
-            setInventory(prev => [
-                ...new Set([...prev, nextNode.effect.addItem]),
-            ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
-        }
-
-        if (nextNode.next) {
-            setCurrentNode(nextNode.next);
-        }
-    };
 
     return (
         <div className="p-4">
