@@ -40,31 +40,38 @@ const story = {
         text: 'You realize you lost your phone! What are you going to do?',
         choices: {
             'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_the_station' },
+            'exit the station': { next: 'exit_station' },
             cry: { next: 'cry_game_over' },
         },
     },
-    realize_no_money: {
-        text: 'You realize you lost your phone! What are you going to do?',
+    talk_to_authorities: {
+        text: 'Seeing that your phone is lost, you decide that the next logical step is to talk to the transit authorities to see if you can somehow get it back. After talking to the officer you get the point across that your phone is missing. The officer scratches his head for a moment then makes a few quick calls. He then informs you that the train you were on became a special express and is now in hashimoto station, and that they will have someone hold it there until you go retrieve it.',
         choices: {
-            'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_the_station' },
-            cry: { next: 'cry_game_over' },
+            'Try to persuade the officer ': { next: 'persuade_officer' },
+            'Bribe the officer': { next: 'bribe_officer' },
+            'Exit the station': { next: 'exit_station' },
         },
     },
-    exit_the_station: {
-        text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
+    persuade_officer: {
+        text: 'You try and persuade the officer to have someone bring it back to the station with tears in your eyes, he looks at you with a that anyone with a set of eyes could tell he was uncomfortable but in the end he agrees and someone should have the phone back to the station by the end of the day IF they find it.',
         choices: {
-            'Go West (Hachiko)': {
-                next: '',
-                effect: { movePage: 'hachiko' },
-            },
-            'Go North (Meiji Jingu)': { next: '' },
-            'Go East (Tokyo Tower)': { next: '' },
+            'Exit the station': { next: 'exit_station' },
+        },
+    },
+    bribe_officer: {
+        text: 'you try to hand persuade the officer with what little money you have, he takes one good looks at it and laughs, leaving you off with a warning to never do that again.',
+        choices: {
+            'Exit the station': { next: 'exit_station' },
+        },
+    },
+    exit_station: {
+        text: 'without a phone but still with a full day ahead of you, you decide to exit the station into the special ward of Shibuya.',
+        choices: {
+            'Exit the station': { next: 'exit_station' },
         },
     },
     cry_game_over: {
-        text: 'you keep crying and crying and eventually you waste your whole day doing nothing. Game Over.',
+        text: 'you keep crying and crying and eventually you waste your whole day doing nothing',
         choices: {
             restart: { next: 'start' },
         },
@@ -76,6 +83,7 @@ function TextAdventure() {
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]); // Inventory state
     // const [index, setIndex] = useState(0);
+
     // useEffect(() => {
     //     document.addEventListener('keydown', moveText, true);
     // }, []);
@@ -160,6 +168,6 @@ function TextAdventure() {
         </div>
     );
 }
-console.log('hi');
+
 export default TextAdventure;
 // export default introPage;
