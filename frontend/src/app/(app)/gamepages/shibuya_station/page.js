@@ -168,5 +168,6 @@ function TextAdventure() {
         </div>
     );
 }
+
 export default TextAdventure;
 // export default introPage;
