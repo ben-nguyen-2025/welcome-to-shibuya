@@ -105,7 +105,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
     useEffect(() => {
         if (middleware === 'guest' && user?.name)
-            router.push(redirectIfAuthenticated);
+            router.push(redirectIfAuthenticated || '/dashboard');
         if (middleware === 'auth' && error) logout();
     }, [user, error]);
 
