@@ -3,6 +3,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+async function fetchCurrentUser() {
+    const res = await fetch('http://localhost:8000/api/user', {
+        credentials: 'include',
+    });
+
+    if (!res.ok) return null;
+
+    const user = await res.json();
+    return user; // contains { id, name, email, etc. }
+}
+
 const story = {
     start: {
         text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
@@ -55,7 +66,10 @@ const story = {
     persuade_officer: {
         text: 'You try and persuade the officer to have someone bring it back to the station with tears in your eyes, he looks at you with a that anyone with a set of eyes could tell he was uncomfortable but in the end he agrees and someone should have the phone back to the station by the end of the day IF they find it.',
         choices: {
-            'Exit the station': { next: 'exit_the_station' },
+            'Exit the station': {
+                next: 'exit_the_station',
+                effect: { addPoints: 10 },
+            },
         },
     },
     bribe_officer: {
@@ -64,7 +78,7 @@ const story = {
             'Exit the station': { next: 'exit_the_station' },
         },
     },
-  exit_the_station: {
+    exit_the_station: {
         text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
         choices: {
             'Go West (Hachiko)': {
@@ -96,6 +110,16 @@ function TextAdventure() {
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
 
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        fetchCurrentUser().then(user => {
+            if (user) {
+                setUserId(user.id);
+            }
+        });
+    }, []);
+
     const handleChoice = choice => {
         const nextNode = story[currentNode].choices[choice];
 
@@ -108,6 +132,17 @@ function TextAdventure() {
         if (nextNode.effect?.movePage) {
             router.push(nextNode.effect.movePage); // Navigate to the specified page
             return;
+        }
+
+        if (nextNode.effect?.addPoints && userId) {
+            fetch('/api/addPoints', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    pointsToAdd: nextNode.effect.addPoints,
+                }),
+            }).catch(err => console.error('Failed to add points:', err));
         }
 
         if (nextNode.next) {
