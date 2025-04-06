@@ -38,54 +38,65 @@ const story = {
     start: {
         text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
         choices: {
-            'Enter the torii gate': { next: 'go_closer' },
-            'Stop for lunch': { next: 'walk_away' },
-            'Stop for lunch': { next: 'walk_away' },
+            'Enter the torii gate': { next: 'torii_gate' },
+            'Stop for lunch': { next: 'lunch' },
         },
     },
-    go_closer: {
-        text: 'You step closer, and the line stretching in front of the statue catches your eye. It snakes out in a tight coil, winding all the way back, a never-ending trail of faces waiting to pay their respects. The sight of it makes you pause for a moment, unsure whether to join the line or turn away. The soft clink of coins and the murmurs of visitors surround you, but it’s the statue itself that seems to hold the most weight in this place.',
+
+    lunch: {
+        text: 'In all your excitement exploring Shibuya you almost forgot to stop for some lunch, luckily not even fifty steps away is a quaint little shop known as “Mori no Terrace”. Stepping inside, you’re greeted by warm, wooden walls that echo the Meiji Jingu forest’s concept of “recycle”, giving the place a cozy, natural feel. The soft hum of conversation fills the air as you approach the menu, which boasts a tempting selection of sandwiches, coffee, and pastries.',
         choices: {
-            'Join the line': {
-                next: 'join_the_line',
-                effect: { addPoints: 10 },
-            },
-            'Cut the line': {
-                next: 'cut_the_line',
+            'Get a sandwich/drink ': {
+                next: 'get_food',
             },
         },
     },
 
-    join_the_line: {
-        text: "A bit hesitant, you take a deep breath and step forward. The shuffle of feet and soft whispers fill the air as you find yourself at the end of the queue. You glance up at the small statue of hachiko, feeling a quiet sense of reverence settle over you, and before you know it you're at the front of the queue getting your picture taken with the famous dog Hachiko.",
+    get_food: {
+        text: 'After perusing the menu, you settle on an egg and tuna sandwich paired with a rich cappuccino. You take your food and find a spot by the window. As you take a bite, your gaze drifts outside, the bustling city of Shibuya sprawling in every direction. The sharp contrast between the urban energy and the serene, green expanse of Meiji Jingu’s forest just behind you strikes you - a perfect moment of calm amidst the chaos.',
         choices: {
-            'Head onwards': {
-                next: 'walk_away',
-            },
+            'Enter the torii gate': { next: 'torii_gate' },
         },
     },
 
-    cut_the_line: {
-        text: 'After a bit of reflection you decide that waiting in this line is just a waste of time, with a few quick steps you snake your way to the front of the line take your picture and bolt away, not without first getting some of the nastiest looks and quite a few choice words hurled your way, before escaping back into the crowd.',
+    torii_gate: {
+        text: 'Walking through the towering gates, you wander for what feels like an eternity, passing small exhibits, statues, and monuments dedicated to the gods. In the distance, a temple rises amidst lush green trees, its grandeur drawing crowds of people who queue eagerly to enter.',
         choices: {
-            'Head onwards': {
-                next: 'walk_away',
-            },
+            'Enter the Temple': { next: 'enter_temple' },
+            'Walk Away': { next: 'walk_away' },
         },
     },
 
     walk_away: {
-        text: 'Where will you go?',
+        text: 'After seeing the line you decide it’s not worth it to wait all that time to just see yet another dusty old temple like the hundreds of others in Shibuya alone.',
+        choices: {},
+    },
+
+    enter_temple: {
+        text: 'Entering the temple, you are greeted by a sea of people. Some adding to the towering wall of ema near the old prayer tree, others watch the occasional wedding ceremony pass by, while a few at the front prepare for a ceremony of their own. At either end of the shrine stands two gates, labeled “East Gate” and “West Gate” respectively. ',
         choices: {
-            'Go to Meiji Jingu': {
-                next: '',
-                effect: { movePage: 'hachiko' },
-            },
-            'Go to Tokyo Tower': {
-                next: '',
-                effect: { movePage: 'hachiko' },
-            },
+            'Pay your respects': { next: 'pay_respects' },
+            'Go through east gate': { next: 'east_gate' },
+            'Go through west gate': { next: 'west_gate' },
         },
+    },
+
+    pay_respects: {
+        text: 'Since you’re here, you decide to pay your respects. You grab an ema and add it to the wall, perhaps praying for a smooth rest of your day – but who knows?',
+        choices: {
+            'Go through east gate': { next: 'east_gate' },
+            'Go through west gate': { next: 'west_gate' },
+        },
+    },
+
+    east_gate: {
+        text: 'You decide to pass through the East Gate. After walking about 100 paces, you enter a field filled with stalls selling an assortment of charms and memorabilia. At the far end of the stalls, a path leads you back to the front of Meiji Jingu.',
+        choices: {},
+    },
+
+    west_gate: {
+        text: 'Going through the West Gate, you find it leads to a side exit with a small animal petting zoo on the other side. Unfortunately, it seems there’s not much else here, you go back to the front of Meiji Jingu.',
+        choices: {},
     },
 };
 
