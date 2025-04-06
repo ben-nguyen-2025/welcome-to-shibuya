@@ -14,6 +14,26 @@ async function fetchCurrentUser() {
     return user; // contains { id, name, email, etc. }
 }
 
+async function fetchUserPoints(userId) {
+    const res = await fetch('/api/getPoints', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+    });
+
+    const data = await res.json();
+    console.log('Response data:', data);
+
+    if (data.success) {
+        console.log('success');
+        console.log(data.points);
+        return data.points;
+    } else {
+        console.error('Failed to fetch points:', data.message || data.error);
+        return null;
+    }
+}
+
 const story = {
     start: {
         text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
@@ -60,7 +80,7 @@ const story = {
         choices: {
             'Try to persuade the officer ': { next: 'persuade_officer' },
             'Bribe the officer': { next: 'bribe_officer' },
-            'Exit the station': { next: 'exit_station' },
+            'Exit the station': { next: 'exit_the_station' },
         },
     },
     persuade_officer: {
@@ -100,7 +120,7 @@ const story = {
     cry_game_over: {
         text: 'you keep crying and crying and eventually you waste your whole day doing nothing',
         choices: {
-            restart: { next: 'start' },
+            restart: { next: 'start', effect: { zeroPoints: true } },
         },
     },
 };
@@ -109,8 +129,8 @@ function TextAdventure() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
-
     const [userId, setUserId] = useState(null);
+    const [points, setPoints] = useState(null);
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -120,7 +140,11 @@ function TextAdventure() {
         });
     }, []);
 
-    const handleChoice = choice => {
+    useEffect(() => {
+        fetchUserPoints(userId).then(setPoints);
+    });
+
+    const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
 
         if (nextNode.effect?.addItem) {
@@ -135,7 +159,7 @@ function TextAdventure() {
         }
 
         if (nextNode.effect?.addPoints && userId) {
-            fetch('/api/addPoints', {
+            const response = await fetch('/api/addPoints', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -143,41 +167,32 @@ function TextAdventure() {
                     pointsToAdd: nextNode.effect.addPoints,
                 }),
             }).catch(err => console.error('Failed to add points:', err));
+            const data = await response.json();
+            if (data.success) {
+                console.log('Points updated successfully');
+                setPoints(data.points);
+            }
+        }
+
+        if (nextNode.effect?.zeroPoints && userId) {
+            const response = await fetch('/api/zeroPoints', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                }),
+            }).catch(err => console.error('Failed to zero points:', err));
+            const data = await response.json();
+            if (data.success) {
+                console.log('Points reset successfully');
+                setPoints(0);
+            }
         }
 
         if (nextNode.next) {
             setCurrentNode(nextNode.next);
         }
     };
-
-    // Inventory state
-    // const [index, setIndex] = useState(0);
-
-    // useEffect(() => {
-    //     document.addEventListener('keydown', moveText, true);
-    // }, []);
-
-    // const moveText = e => {
-    //     console.log('clicked key: ' + e.key);
-    //     if (e.key == ' ' || e.key == 'Enter' || e.key == 'ArrowRight') {
-    //         //console.log('go forwards');
-    //         setIndex(index => {
-    //             if (index < text.length - 1) {
-    //                 return index + 1;
-    //             }
-    //             return index;
-    //         });
-    //     }
-    //     if (e.key == 'ArrowLeft') {
-    //         //console.log('go backwards');
-    //         setIndex(index => {
-    //             if (index > 0) {
-    //                 return index - 1;
-    //             }
-    //             return index;
-    //         });
-    //     }
-    // };
 
     return (
         <div className="p-4">
@@ -214,6 +229,11 @@ function TextAdventure() {
                 ) : (
                     <p>Nothing yet...</p>
                 )}
+            </div>
+
+            {/* Display points */}
+            <div className="mt-4 p-2 border rounded-md">
+                <h2 className="font-bold">Points: {points}</h2>
             </div>
         </div>
     );
