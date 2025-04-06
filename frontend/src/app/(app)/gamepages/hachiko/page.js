@@ -78,7 +78,7 @@ const story = {
         choices: {
             'Go to Meiji Jingu': {
                 next: '',
-                effect: { movePage: 'hachiko' },
+                effect: { movePage: 'meiji_jingu' },
             },
             'Go to Tokyo Tower': {
                 next: '',

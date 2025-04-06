@@ -105,7 +105,10 @@ const story = {
                 next: '',
                 effect: { movePage: 'hachiko' },
             },
-            'Go North (Meiji Jingu)': { next: '' },
+            'Go North (Meiji Jingu)': {
+                next: '',
+                effect: { movePage: 'meiji_jingu' },
+            },
             'Go East (Tokyo Tower)': { next: '' },
         },
     },
