@@ -296,11 +296,6 @@ function meiji_jingu() {
                     <ul>
                         {location.map((location, index) => (
                             <li key={index}>📍 {location}</li>
-                <h2 className="font-bold">Inventory:</h2>
-                {inventory.length > 0 ? (
-                    <ul>
-                        {inventory.map((item, index) => (
-                            <li key={index}>🗡 {item}</li>
                         ))}
                     </ul>
                 ) : (
