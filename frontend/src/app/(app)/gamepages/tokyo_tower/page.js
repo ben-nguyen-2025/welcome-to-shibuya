@@ -56,102 +56,52 @@ async function fetchUserLocations(userId) {
 
 const story = {
     start: {
-        text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
+        text: 'Heading east from the palace you find yourself under the iconic tokyo tower in all its red and white painted glory, some say it looks like a candy cane and you have to say you definitely agree.',
         choices: {
-            backpack: { next: 'check_backpack' },
-            wallet: { next: 'check_wallet' },
+            'go up the tower': { next: 'go_up_the_tower' },
+            'investigate the base': { next: 'investigate_the_base' },
+            'head out': { next: 'exit_the_tower' },
         },
     },
-    check_backpack: {
-        text: "From your back you swing around a large bag, searching it you find a balled up sweater, a water bottle and your wallet. You yank the hoodie out of your bag, quickly pulling it over your head. The familiar weight of the fabric settles around you, you take a deep breath and for a brief moment you can't help but feel a slight sense of comfort from the old thing.",
+
+    go_up_the_tower: {
+        text: 'You enter the tower, grabbing a ticket at the kiosk. Inside, you see two paths: a spiral staircase leading toward the stars, offering a slow climb with stunning views, or a sleek elevator that promises a fast, smooth ride to the top. The choice is yours.',
         choices: {
-            // 'check wallet': {
-            //     next: 'sword_collected',
-            //     effect: { addItem: 'sword' },
-            // },
-            'check wallet': { next: 'check_wallet' },
+            'take stairs': { next: 'went_up_stairs', effect: { addPoints: 5 } },
+            'take elevator': { next: 'went_up_elevator' },
         },
     },
-    check_wallet: {
-        text: 'Opening your wallet you find 5000 yen, your debit card, and your residence/school id cards.',
+
+    went_up_stairs: {
+        text: 'Bravely, you muster what strength you have and begin your ascent up the stairs. It takes you much longer than you thought and once at the top you are absolutely wiped. But you did it!',
         choices: {
-            continue: {
-                next: 'start_with_wallet',
-                effect: { addItem: '5000 yen' },
-            },
+            'see the top': { next: 'the_peak' },
         },
     },
-    start_with_wallet: {
-        text: 'You decide to check your pockets...',
+
+    went_up_elevator: {
+        text: 'You stand at the base of the tower, your eyes scanning the daunting staircase. Seven, maybe eight flights of stairs—each step a promise of burn and exhaustion. You glance over to the elevator, gleaming with the promise of convenience and ease. For a moment, you consider the climb, the sense of accomplishment, the challenge. Then, the thought of the fatigue setting in halfway up makes you reconsider. With a slight sigh, you make the logical choice. The elevator, your reliable ally, awaits. You step inside, hit the button, and feel the tension of the decision lift as the doors close, taking you upward without a second thought. The climb can wait.',
         choices: {
-            continue: { next: 'realize_no_money' },
+            'see the top': { next: 'the_peak' },
         },
     },
-    realize_no_money: {
-        text: 'You realize you lost your phone! What are you going to do?',
+
+    the_peak: {
+        text: 'The views are breathtaking. Stretching out before you is a horizon that seems to go on forever, an endless canvas where the earth meets the sky in a seamless blend of colors. The platform itself is a small oasis, complete with a cozy cafe tucked to the side and tiny shrine, its presence quiet and reverent. But its view steals your attention completely. You stand there, frozen for a moment, your eyes tracing the vastness that stretches out in every direction. The world feels endless, and for a brief moment, you forget to breathe, as the beauty of it all takes your breath away.',
         choices: {
-            'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_the_station' },
-            cry: { next: 'cry_game_over' },
+            'go down': { next: 'exit_the_tower' },
         },
     },
-    talk_to_authorities: {
-        text: 'Seeing that your phone is lost, you decide that the next logical step is to talk to the transit authorities to see if you can somehow get it back. After talking to the officer you get the point across that your phone is missing. The officer scratches his head for a moment then makes a few quick calls. He then informs you that the train you were on became a special express and is now in hashimoto station, and that they will have someone hold it there until you go retrieve it.',
+
+    exit_the_tower: {
+        text: 'where will you go next?',
         choices: {
-            'Try to persuade the officer ': { next: 'persuade_officer' },
-            'Bribe the officer': { next: 'bribe_officer' },
-            'Exit the station': { next: 'exit_the_station' },
-        },
-    },
-    persuade_officer: {
-        text: 'You try and persuade the officer to have someone bring it back to the station with tears in your eyes, he looks at you with a that anyone with a set of eyes could tell he was uncomfortable but in the end he agrees and someone should have the phone back to the station by the end of the day IF they find it.',
-        choices: {
-            'Exit the station': {
-                next: 'exit_the_station',
-                effect: { addPoints: 10 },
-            },
-        },
-    },
-    bribe_officer: {
-        text: 'you try to hand persuade the officer with what little money you have, he takes one good looks at it and laughs, leaving you off with a warning to never do that again.',
-        choices: {
-            'Exit the station': { next: 'exit_the_station' },
-        },
-    },
-    exit_the_station: {
-        text: "After walking through the station, you go down the escalator and are met with a sea of people, a thousand neon lights, and just as many smells, to say it's overwhelming at first is an understatement, but in the best way possible.",
-        choices: {
-            'Go West (Hachiko)': {
-                next: '',
-                effect: { movePage: 'hachiko', addLocation: 'hachiko' },
-            },
-            'Go North (Meiji Jingu)': {
-                next: '',
-                effect: { movePage: 'meiji_jingu', addLocation: 'meiji_jingu' },
-            },
-            'Go East (Tokyo Tower)': {
-                next: '',
-                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
-            },
-        },
-    },
-    realize_no_money: {
-        text: 'You realize you lost your phone! What are you going to do?',
-        choices: {
-            'talk to authorities': { next: 'talk_to_authorities' },
-            'exit the station': { next: 'exit_the_station' },
-            cry: { next: 'cry_game_over' },
-        },
-    },
-    cry_game_over: {
-        text: 'you keep crying and crying and eventually you waste your whole day doing nothing',
-        choices: {
-            restart: { next: 'start', effect: { zeroPoints: true } },
+            home: { next: 'exit_the_tower' },
         },
     },
 };
 
-function TextAdventure() {
+function tokyo_tower() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
@@ -258,7 +208,7 @@ function TextAdventure() {
         <div className="p-4">
             <img
                 className="w-full h-full inset-0 object-cover object-top"
-                src="/subway.png"
+                src="/tokyo_tower.jpg"
             />
             <h1 className="text-2xl font-bold mb-4">
                 {story[currentNode].text}
@@ -299,5 +249,5 @@ function TextAdventure() {
     );
 }
 
-export default TextAdventure;
+export default tokyo_tower;
 // export default introPage;
