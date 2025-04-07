@@ -133,6 +133,8 @@ const story = {
                 next: '',
                 effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
             },
+
+     
         },
     },
     realize_no_money: {

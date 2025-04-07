@@ -54,6 +54,7 @@ async function fetchUserLocations(userId) {
     }
 }
 
+
 const story = {
     start: {
         text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
@@ -128,6 +129,7 @@ function meiji_jingu() {
     const [points, setPoints] = useState(null);
     const [location, setLocation] = useState([]);
 
+
     useEffect(() => {
         fetchCurrentUser().then(user => {
             if (user) {
@@ -153,6 +155,11 @@ function meiji_jingu() {
             setInventory(prev => [
                 ...new Set([...prev, nextNode.effect.addItem]),
             ]);
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
         }
 
         if (nextNode.effect?.addPoints && userId) {
@@ -251,6 +258,11 @@ function meiji_jingu() {
                     <ul>
                         {location.map((location, index) => (
                             <li key={index}>📍 {location}</li>
+                <h2 className="font-bold">Inventory:</h2>
+                {inventory.length > 0 ? (
+                    <ul>
+                        {inventory.map((item, index) => (
+                            <li key={index}>🗡 {item}</li>
                         ))}
                     </ul>
                 ) : (
