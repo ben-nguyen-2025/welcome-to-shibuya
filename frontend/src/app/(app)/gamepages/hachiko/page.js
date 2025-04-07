@@ -34,6 +34,26 @@ async function fetchUserPoints(userId) {
     }
 }
 
+async function fetchUserLocations(userId) {
+    const res = await fetch('/api/getLocation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+    });
+
+    const data = await res.json();
+    console.log('Response data:', data);
+
+    if (data.success) {
+        console.log('success');
+        console.log(data.locations);
+        return data.locations;
+    } else {
+        console.error('Failed to fetch points:', data.message || data.error);
+        return null;
+    }
+}
+
 const story = {
     start: {
         text: 'Cutting through the unyielding wave of people, you finally stumble into a small, open space. Four thin trees stand huddled together to one side, their branches sway gently in the wind. In the center of the clearing, almost dwarfed by the chaotic crowd around it, is a tiny bronze statue weathered, yet steadfast. A plaque beneath it reads “Hachiko”',
@@ -51,6 +71,7 @@ const story = {
             },
             'Cut the line': {
                 next: 'cut_the_line',
+                effect: { addPoints: 3 },
             },
         },
     },
@@ -78,11 +99,11 @@ const story = {
         choices: {
             'Go to Meiji Jingu': {
                 next: '',
-                effect: { movePage: 'meiji_jingu' },
+                effect: { movePage: 'meiji_jingu', addLocation: 'meiji_jingu' },
             },
             'Go to Tokyo Tower': {
                 next: '',
-                effect: { movePage: 'hachiko' },
+                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
             },
         },
     },
@@ -94,6 +115,7 @@ function Hachiko() {
     const [inventory, setInventory] = useState([]);
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
+    const [location, setLocation] = useState([]);
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -107,6 +129,12 @@ function Hachiko() {
         fetchUserPoints(userId).then(setPoints);
     });
 
+    useEffect(() => {
+        if (userId) {
+            fetchUserLocations(userId).then(setLocation);
+        }
+    }, [userId]);
+
     const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
 
@@ -114,11 +142,6 @@ function Hachiko() {
             setInventory(prev => [
                 ...new Set([...prev, nextNode.effect.addItem]),
             ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
         }
 
         if (nextNode.effect?.addPoints && userId) {
@@ -152,6 +175,38 @@ function Hachiko() {
             }
         }
 
+        if (nextNode.effect?.addLocation && userId) {
+            console.log('Adding location:', nextNode.effect.addLocation);
+            try {
+                const response = await fetch('/api/addLocation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        newLocation: nextNode.effect.addLocation,
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Location added successfully:', data.locations);
+                    setLocation(data.locations); // Update the state with the new locations
+                } else {
+                    console.error(
+                        'Failed to add location:',
+                        data.message || data.error,
+                    );
+                }
+            } catch (err) {
+                console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
         if (nextNode.next) {
             setCurrentNode(nextNode.next);
         }
@@ -166,6 +221,7 @@ function Hachiko() {
             <h1 className="text-2xl font-bold mb-4">
                 {story[currentNode].text}
             </h1>
+
             <div className="space-y-2">
                 {Object.entries(story[currentNode].choices).map(
                     ([choice, details]) => (
@@ -178,19 +234,22 @@ function Hachiko() {
                     ),
                 )}
             </div>
+
             {/* Display inventory */}
             <div className="mt-4 p-2 border rounded-md">
-                <h2 className="font-bold">Inventory:</h2>
-                {inventory.length > 0 ? (
+                <h2 className="font-bold">Locations Visited:</h2>
+                {location != null ? (
                     <ul>
-                        {inventory.map((item, index) => (
-                            <li key={index}>🗡 {item}</li>
+                        {location.map((location, index) => (
+                            <li key={index}>📍 {location}</li>
                         ))}
                     </ul>
                 ) : (
                     <p>Nothing yet...</p>
                 )}
             </div>
+
+            {/* Display points */}
             <div className="mt-4 p-2 border rounded-md">
                 <h2 className="font-bold">Points: {points}</h2>
             </div>

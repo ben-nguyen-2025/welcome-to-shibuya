@@ -54,119 +54,60 @@ async function fetchUserLocations(userId) {
     }
 }
 
-
 const story = {
     start: {
-        text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
+        text: 'Heading east from the palace you find yourself under the iconic tokyo tower in all its red and white painted glory, some say it looks like a candy cane and you have to say you definitely agree.',
         choices: {
-            'Enter the torii gate': { next: 'torii_gate' },
-            'Stop for lunch': { next: 'lunch' },
+            'go up the tower': { next: 'go_up_the_tower' },
+            'investigate the base': { next: 'investigate_the_base' },
+            'head out': { next: 'exit_the_tower' },
         },
     },
 
-    start_food: {
-        text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
+    go_up_the_tower: {
+        text: 'You enter the tower, grabbing a ticket at the kiosk. Inside, you see two paths: a spiral staircase leading toward the stars, offering a slow climb with stunning views, or a sleek elevator that promises a fast, smooth ride to the top. The choice is yours.',
         choices: {
-            'Enter the torii gate': { next: 'torii_gate' },
+            'take stairs': { next: 'went_up_stairs', effect: { addPoints: 5 } },
+            'take elevator': { next: 'went_up_elevator' },
         },
     },
 
-    lunch: {
-        text: 'In all your excitement exploring Shibuya you almost forgot to stop for some lunch, luckily not even fifty steps away is a quaint little shop known as “Mori no Terrace”. Stepping inside, you’re greeted by warm, wooden walls that echo the Meiji Jingu forest’s concept of “recycle”, giving the place a cozy, natural feel. The soft hum of conversation fills the air as you approach the menu, which boasts a tempting selection of sandwiches, coffee, and pastries.',
+    went_up_stairs: {
+        text: 'Bravely, you muster what strength you have and begin your ascent up the stairs. It takes you much longer than you thought and once at the top you are absolutely wiped. But you did it!',
         choices: {
-            'Get a sandwich/drink ': {
-                next: 'get_food',
-            },
+            'see the top': { next: 'the_peak' },
         },
     },
 
-    get_food: {
-        text: 'After perusing the menu, you settle on an egg and tuna sandwich paired with a rich cappuccino. You take your food and find a spot by the window. As you take a bite, your gaze drifts outside, the bustling city of Shibuya sprawling in every direction. The sharp contrast between the urban energy and the serene, green expanse of Meiji Jingu’s forest just behind you strikes you - a perfect moment of calm amidst the chaos.',
+    went_up_elevator: {
+        text: 'You stand at the base of the tower, your eyes scanning the daunting staircase. Seven, maybe eight flights of stairs—each step a promise of burn and exhaustion. You glance over to the elevator, gleaming with the promise of convenience and ease. For a moment, you consider the climb, the sense of accomplishment, the challenge. Then, the thought of the fatigue setting in halfway up makes you reconsider. With a slight sigh, you make the logical choice. The elevator, your reliable ally, awaits. You step inside, hit the button, and feel the tension of the decision lift as the doors close, taking you upward without a second thought. The climb can wait.',
         choices: {
-            'Go Back': { next: 'start_food' },
+            'see the top': { next: 'the_peak' },
         },
     },
 
-    torii_gate: {
-        text: 'Walking through the towering gates, you wander for what feels like an eternity, passing small exhibits, statues, and monuments dedicated to the gods. In the distance, a temple rises amidst lush green trees, its grandeur drawing crowds of people who queue eagerly to enter.',
+    the_peak: {
+        text: 'The views are breathtaking. Stretching out before you is a horizon that seems to go on forever, an endless canvas where the earth meets the sky in a seamless blend of colors. The platform itself is a small oasis, complete with a cozy cafe tucked to the side and tiny shrine, its presence quiet and reverent. But its view steals your attention completely. You stand there, frozen for a moment, your eyes tracing the vastness that stretches out in every direction. The world feels endless, and for a brief moment, you forget to breathe, as the beauty of it all takes your breath away.',
         choices: {
-            'Enter the Temple': { next: 'enter_temple' },
-            'Walk Away': { next: 'walk_away' },
+            'go down': { next: 'exit_the_tower' },
         },
     },
 
-    walk_away: {
-        text: 'After seeing the line you decide it’s not worth it to wait all that time to just see yet another dusty old temple like the hundreds of others in Shibuya alone.',
-        choices: {},
-    },
-
-    enter_temple: {
-        text: 'Entering the temple, you are greeted by a sea of people. Some adding to the towering wall of ema near the old prayer tree, others watch the occasional wedding ceremony pass by, while a few at the front prepare for a ceremony of their own. At either end of the shrine stands two gates, labeled “East Gate” and “West Gate” respectively. ',
+    exit_the_tower: {
+        text: 'where will you go next?',
         choices: {
-            'Pay your respects': { next: 'pay_respects' },
-            'Go through east gate': { next: 'east_gate' },
-            'Go through west gate': { next: 'west_gate' },
-        },
-    },
-
-    enter_temple_c: {
-        text: 'Entering the temple, you are greeted by a sea of people. Some adding to the towering wall of ema near the old prayer tree, others watch the occasional wedding ceremony pass by, while a few at the front prepare for a ceremony of their own. At either end of the shrine stands two gates, labeled “East Gate” and “West Gate” respectively. ',
-        choices: {
-            'Go east': {
-                next: '',
-                effect: { movePage: 'tokyo_tower' },
-            },
-            'Go northeast': {
-                next: '',
-                effect: { movePage: 'imperial_palace' },
-            },
-        },
-    },
-
-    pay_respects: {
-        text: 'Since you’re here, you decide to pay your respects. You grab an ema and add it to the wall, perhaps praying for a smooth rest of your day – but who knows?',
-        choices: {
-            'Go back': { next: 'enter_temple_c' },
-        },
-    },
-
-    east_gate: {
-        text: 'You decide to pass through the East Gate. After walking about 100 paces, you enter a field filled with stalls selling an assortment of charms and memorabilia. At the far end of the stalls, a path leads you back to the front of Meiji Jingu.',
-        choices: {
-            'Go east': {
-                next: '',
-                effect: { movePage: 'tokyo_tower' },
-            },
-            'Go northeast': {
-                next: '',
-                effect: { movePage: 'imperial_palace' },
-            },
-        },
-    },
-
-    west_gate: {
-        text: 'Going through the West Gate, you find it leads to a side exit with a small animal petting zoo on the other side. Unfortunately, it seems there’s not much else here, you go back to the front of Meiji Jingu.',
-        choices: {
-            'Go east': {
-                next: '',
-                effect: { movePage: 'tokyo_tower' },
-            },
-            'Go northeast': {
-                next: '',
-                effect: { movePage: 'imperial_palace' },
-            },
+            home: { next: 'exit_the_tower' },
         },
     },
 };
 
-function meiji_jingu() {
+function tokyo_tower() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
     const [location, setLocation] = useState([]);
-
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -193,11 +134,6 @@ function meiji_jingu() {
             setInventory(prev => [
                 ...new Set([...prev, nextNode.effect.addItem]),
             ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
         }
 
         if (nextNode.effect?.addPoints && userId) {
@@ -272,11 +208,12 @@ function meiji_jingu() {
         <div className="p-4">
             <img
                 className="w-full h-full inset-0 object-cover object-top"
-                src="/meiji_1.png"
+                src="/tokyo_tower.jpg"
             />
             <h1 className="text-2xl font-bold mb-4">
                 {story[currentNode].text}
             </h1>
+
             <div className="space-y-2">
                 {Object.entries(story[currentNode].choices).map(
                     ([choice, details]) => (
@@ -289,6 +226,7 @@ function meiji_jingu() {
                     ),
                 )}
             </div>
+
             {/* Display inventory */}
             <div className="mt-4 p-2 border rounded-md">
                 <h2 className="font-bold">Locations Visited:</h2>
@@ -296,17 +234,14 @@ function meiji_jingu() {
                     <ul>
                         {location.map((location, index) => (
                             <li key={index}>📍 {location}</li>
-                <h2 className="font-bold">Inventory:</h2>
-                {inventory.length > 0 ? (
-                    <ul>
-                        {inventory.map((item, index) => (
-                            <li key={index}>🗡 {item}</li>
                         ))}
                     </ul>
                 ) : (
                     <p>Nothing yet...</p>
                 )}
             </div>
+
+            {/* Display points */}
             <div className="mt-4 p-2 border rounded-md">
                 <h2 className="font-bold">Points: {points}</h2>
             </div>
@@ -314,5 +249,5 @@ function meiji_jingu() {
     );
 }
 
-export default meiji_jingu;
+export default tokyo_tower;
 // export default introPage;

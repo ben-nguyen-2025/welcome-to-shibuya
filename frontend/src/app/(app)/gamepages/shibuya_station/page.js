@@ -34,6 +34,26 @@ async function fetchUserPoints(userId) {
     }
 }
 
+async function fetchUserLocations(userId) {
+    const res = await fetch('/api/getLocation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+    });
+
+    const data = await res.json();
+    console.log('Response data:', data);
+
+    if (data.success) {
+        console.log('success');
+        console.log(data.locations);
+        return data.locations;
+    } else {
+        console.error('Failed to fetch points:', data.message || data.error);
+        return null;
+    }
+}
+
 const story = {
     start: {
         text: 'You open your eyes, you feel the shaking of the train car. The familiar chime of the train informing you that you are nearing your destination. The train juts to a stop and people begin rushing off. Caught up in the wave of people we are ushered out onto the platform, after gathering yourself you decide to check your things.',
@@ -103,13 +123,18 @@ const story = {
         choices: {
             'Go West (Hachiko)': {
                 next: '',
-                effect: { movePage: 'hachiko' },
+                effect: { movePage: 'hachiko', addLocation: 'hachiko' },
             },
             'Go North (Meiji Jingu)': {
                 next: '',
-                effect: { movePage: 'meiji_jingu' },
+                effect: { movePage: 'meiji_jingu', addLocation: 'meiji_jingu' },
             },
-            'Go East (Tokyo Tower)': { next: '' },
+            'Go East (Tokyo Tower)': {
+                next: '',
+                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
+            },
+
+     
         },
     },
     realize_no_money: {
@@ -134,6 +159,7 @@ function TextAdventure() {
     const [inventory, setInventory] = useState([]);
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
+    const [location, setLocation] = useState([]);
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -147,6 +173,12 @@ function TextAdventure() {
         fetchUserPoints(userId).then(setPoints);
     });
 
+    useEffect(() => {
+        if (userId) {
+            fetchUserLocations(userId).then(setLocation);
+        }
+    }, [userId]);
+
     const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
 
@@ -154,11 +186,6 @@ function TextAdventure() {
             setInventory(prev => [
                 ...new Set([...prev, nextNode.effect.addItem]),
             ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
         }
 
         if (nextNode.effect?.addPoints && userId) {
@@ -192,6 +219,38 @@ function TextAdventure() {
             }
         }
 
+        if (nextNode.effect?.addLocation && userId) {
+            console.log('Adding location:', nextNode.effect.addLocation);
+            try {
+                const response = await fetch('/api/addLocation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        newLocation: nextNode.effect.addLocation,
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Location added successfully:', data.locations);
+                    setLocation(data.locations); // Update the state with the new locations
+                } else {
+                    console.error(
+                        'Failed to add location:',
+                        data.message || data.error,
+                    );
+                }
+            } catch (err) {
+                console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
         if (nextNode.next) {
             setCurrentNode(nextNode.next);
         }
@@ -222,11 +281,11 @@ function TextAdventure() {
 
             {/* Display inventory */}
             <div className="mt-4 p-2 border rounded-md">
-                <h2 className="font-bold">Inventory:</h2>
-                {inventory.length > 0 ? (
+                <h2 className="font-bold">Locations Visited:</h2>
+                {location != null ? (
                     <ul>
-                        {inventory.map((item, index) => (
-                            <li key={index}>🗡 {item}</li>
+                        {location.map((location, index) => (
+                            <li key={index}>📍 {location}</li>
                         ))}
                     </ul>
                 ) : (
