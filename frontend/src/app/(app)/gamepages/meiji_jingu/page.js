@@ -2,57 +2,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import {
+    fetchCurrentUser,
+    fetchUserPoints,
+    fetchUserLocations,
+} from '@/app/utils';
 
-async function fetchCurrentUser() {
-    const res = await fetch('http://localhost:8000/api/user', {
-        credentials: 'include',
-    });
-
-    if (!res.ok) return null;
-
-    const user = await res.json();
-    return user; // contains { id, name, email, etc. }
-}
-
-async function fetchUserPoints(userId) {
-    const res = await fetch('/api/getPoints', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-    });
-
-    const data = await res.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-        console.log('success');
-        console.log(data.points);
-        return data.points;
-    } else {
-        console.error('Failed to fetch points:', data.message || data.error);
-        return null;
-    }
-}
-
-async function fetchUserLocations(userId) {
-    const res = await fetch('/api/getLocation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-    });
-
-    const data = await res.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-        console.log('success');
-        console.log(data.locations);
-        return data.locations;
-    } else {
-        console.error('Failed to fetch points:', data.message || data.error);
-        return null;
-    }
-}
 
 const story = {
     start: {
@@ -113,11 +68,15 @@ const story = {
         choices: {
             'Go east': {
                 next: '',
-                effect: { movePage: 'tokyo_tower' },
+                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
             },
             'Go northeast': {
                 next: '',
-                effect: { movePage: 'imperial_palace' },
+                effect: {
+                    movePage: 'imperial_palace',
+                    addLocation: 'imperial_palace',
+                },
+
             },
         },
     },
@@ -134,11 +93,17 @@ const story = {
         choices: {
             'Go east': {
                 next: '',
-                effect: { movePage: 'tokyo_tower' },
+                effect: {
+                    movePage: 'tokyo_tower',
+                    addLocation: 'tokyo_tower',
+                },
             },
             'Go northeast': {
                 next: '',
-                effect: { movePage: 'imperial_palace' },
+                effect: {
+                    movePage: 'imperial_palace',
+                    addLocation: 'imperial_palace',
+                },
             },
         },
     },
@@ -148,11 +113,17 @@ const story = {
         choices: {
             'Go east': {
                 next: '',
-                effect: { movePage: 'tokyo_tower' },
+                effect: {
+                    movePage: 'tokyo_tower',
+                    addLocation: 'tokyo_tower',
+                },
             },
             'Go northeast': {
                 next: '',
-                effect: { movePage: 'imperial_palace' },
+                effect: {
+                    movePage: 'imperial_palace',
+                    addLocation: 'imperial_palace',
+                },
             },
         },
     },
@@ -191,11 +162,6 @@ function meiji_jingu() {
             setInventory(prev => [
                 ...new Set([...prev, nextNode.effect.addItem]),
             ]);
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
         }
 
         if (nextNode.effect?.addPoints && userId) {
@@ -253,6 +219,21 @@ function meiji_jingu() {
                 }
             } catch (err) {
                 console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.zeroLocation && userId) {
+            const response = await fetch('/api/zeroLocation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                }),
+            }).catch(err => console.error('Failed to zero location:', err));
+            const data = await response.json();
+            if (data.success) {
+                console.log('Locations visited reset successfully');
+                setLocation([]);
             }
         }
 

@@ -2,57 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
-async function fetchCurrentUser() {
-    const res = await fetch('http://localhost:8000/api/user', {
-        credentials: 'include',
-    });
-
-    if (!res.ok) return null;
-
-    const user = await res.json();
-    return user; // contains { id, name, email, etc. }
-}
-
-async function fetchUserPoints(userId) {
-    const res = await fetch('/api/getPoints', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-    });
-
-    const data = await res.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-        console.log('success');
-        console.log(data.points);
-        return data.points;
-    } else {
-        console.error('Failed to fetch points:', data.message || data.error);
-        return null;
-    }
-}
-
-async function fetchUserLocations(userId) {
-    const res = await fetch('/api/getLocation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-    });
-
-    const data = await res.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-        console.log('success');
-        console.log(data.locations);
-        return data.locations;
-    } else {
-        console.error('Failed to fetch points:', data.message || data.error);
-        return null;
-    }
-}
+import {
+    fetchCurrentUser,
+    fetchUserPoints,
+    fetchUserLocations,
+} from '@/app/utils';
 
 const story = {
     start: {
@@ -133,8 +87,6 @@ const story = {
                 next: '',
                 effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
             },
-
-     
         },
     },
     realize_no_money: {
@@ -148,7 +100,10 @@ const story = {
     cry_game_over: {
         text: 'you keep crying and crying and eventually you waste your whole day doing nothing',
         choices: {
-            restart: { next: 'start', effect: { zeroPoints: true } },
+            restart: {
+                next: 'start',
+                effect: { zeroPoints: true, zeroLocation: true },
+            },
         },
     },
 };
@@ -170,14 +125,14 @@ function TextAdventure() {
     }, []);
 
     useEffect(() => {
-        fetchUserPoints(userId).then(setPoints);
-    });
-
-    useEffect(() => {
         if (userId) {
             fetchUserLocations(userId).then(setLocation);
         }
     }, [userId]);
+
+    useEffect(() => {
+        fetchUserPoints(userId).then(setPoints);
+    });
 
     const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
@@ -243,6 +198,21 @@ function TextAdventure() {
                 }
             } catch (err) {
                 console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.zeroLocation && userId) {
+            const response = await fetch('/api/zeroLocation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                }),
+            }).catch(err => console.error('Failed to zero location:', err));
+            const data = await response.json();
+            if (data.success) {
+                console.log('Locations visited reset successfully');
+                setLocation([]);
             }
         }
 

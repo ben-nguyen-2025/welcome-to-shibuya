@@ -2,37 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
-async function fetchCurrentUser() {
-    const res = await fetch('http://localhost:8000/api/user', {
-        credentials: 'include',
-    });
-
-    if (!res.ok) return null;
-
-    const user = await res.json();
-    return user; // contains { id, name, email, etc. }
-}
-
-async function fetchUserPoints(userId) {
-    const res = await fetch('/api/getPoints', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-    });
-
-    const data = await res.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-        console.log('success');
-        console.log(data.points);
-        return data.points;
-    } else {
-        console.error('Failed to fetch points:', data.message || data.error);
-        return null;
-    }
-}
+import {
+    fetchCurrentUser,
+    fetchUserPoints,
+    fetchUserLocations,
+} from '@/app/utils';
 
 const story = {
     start: {
@@ -63,7 +37,11 @@ const story = {
         choices: {
             restart: {
                 next: '',
-                effect: { movePage: 'shibuya_station', zeroPoints: true },
+                effect: {
+                    movePage: 'shibuya_station',
+                    zeroPoints: true,
+                    zeroLocation: true,
+                },
             },
         },
     },
@@ -158,6 +136,8 @@ function imperial_palace() {
     const [inventory, setInventory] = useState([]);
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
+    const [location, setLocation] = useState([]);
+
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -170,6 +150,12 @@ function imperial_palace() {
     useEffect(() => {
         fetchUserPoints(userId).then(setPoints);
     });
+
+    useEffect(() => {
+        if (userId) {
+            fetchUserLocations(userId).then(setLocation);
+        }
+    }, [userId]);
 
     const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
@@ -211,6 +197,48 @@ function imperial_palace() {
             }
         }
 
+        if (nextNode.effect?.addLocation && userId) {
+            console.log('Adding location:', nextNode.effect.addLocation);
+            try {
+                const response = await fetch('/api/addLocation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        newLocation: nextNode.effect.addLocation,
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Location added successfully:', data.locations);
+                    setLocation(data.locations); // Update the state with the new locations
+                } else {
+                    console.error(
+                        'Failed to add location:',
+                        data.message || data.error,
+                    );
+                }
+            } catch (err) {
+                console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.zeroLocation && userId) {
+            const response = await fetch('/api/zeroLocation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                }),
+            }).catch(err => console.error('Failed to zero location:', err));
+            const data = await response.json();
+            if (data.success) {
+                console.log('Locations visited reset successfully');
+                setLocation([]);
+            }
+        }
+
         if (nextNode.effect?.movePage) {
             router.push(nextNode.effect.movePage); // Navigate to the specified page
             return;
@@ -242,19 +270,21 @@ function imperial_palace() {
                     ),
                 )}
             </div>
-            {/* Display inventory */}
             <div className="mt-4 p-2 border rounded-md">
-                <h2 className="font-bold">Inventory:</h2>
-                {inventory.length > 0 ? (
+                <h2 className="font-bold">Locations Visited:</h2>
+                {location != null ? (
                     <ul>
-                        {inventory.map((item, index) => (
-                            <li key={index}>🗡 {item}</li>
+                        {location.map((location, index) => (
+                            <li key={index}>📍 {location}</li>
+
                         ))}
                     </ul>
                 ) : (
                     <p>Nothing yet...</p>
                 )}
             </div>
+
+            {/* Display points */}
             <div className="mt-4 p-2 border rounded-md">
                 <h2 className="font-bold">Points: {points}</h2>
             </div>
