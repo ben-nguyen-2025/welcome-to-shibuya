@@ -6,6 +6,7 @@ import {
     fetchCurrentUser,
     fetchUserPoints,
     fetchUserLocations,
+    handleChoice,
 } from '@/app/utils';
 
 const story = {
@@ -196,7 +197,19 @@ function Hachiko() {
                     ([choice, details]) => (
                         <button
                             key={choice}
-                            onClick={() => handleChoice(choice)}
+                            onClick={() =>
+                                handleChoice(
+                                    choice,
+                                    currentNode,
+                                    setCurrentNode,
+                                    setInventory,
+                                    setPoints,
+                                    setLocation,
+                                    userId,
+                                    story,
+                                    router,
+                                )
+                            }
                             className="bg-blue-500 text-white px-4 py-2 rounded-md">
                             {choice}
                         </button>
