@@ -138,6 +138,7 @@ function imperial_palace() {
     const [points, setPoints] = useState(null);
     const [location, setLocation] = useState([]);
 
+
     useEffect(() => {
         fetchCurrentUser().then(user => {
             if (user) {
@@ -275,6 +276,7 @@ function imperial_palace() {
                     <ul>
                         {location.map((location, index) => (
                             <li key={index}>📍 {location}</li>
+
                         ))}
                     </ul>
                 ) : (

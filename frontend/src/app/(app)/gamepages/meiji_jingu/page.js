@@ -8,6 +8,7 @@ import {
     fetchUserLocations,
 } from '@/app/utils';
 
+
 const story = {
     start: {
         text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
@@ -75,6 +76,7 @@ const story = {
                     movePage: 'imperial_palace',
                     addLocation: 'imperial_palace',
                 },
+
             },
         },
     },
