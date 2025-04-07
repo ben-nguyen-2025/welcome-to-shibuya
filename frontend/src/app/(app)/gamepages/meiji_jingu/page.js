@@ -6,6 +6,7 @@ import {
     fetchCurrentUser,
     fetchUserPoints,
     fetchUserLocations,
+    handleChoice,
 } from '@/app/utils';
 
 
@@ -155,98 +156,6 @@ function meiji_jingu() {
         }
     }, [userId]);
 
-    const handleChoice = async choice => {
-        const nextNode = story[currentNode].choices[choice];
-
-        if (nextNode.effect?.addItem) {
-            setInventory(prev => [
-                ...new Set([...prev, nextNode.effect.addItem]),
-            ]);
-        }
-
-        if (nextNode.effect?.addPoints && userId) {
-            const response = await fetch('/api/addPoints', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                    pointsToAdd: nextNode.effect.addPoints,
-                }),
-            }).catch(err => console.error('Failed to add points:', err));
-            const data = await response.json();
-            if (data.success) {
-                console.log('Points updated successfully');
-                setPoints(data.points);
-            }
-        }
-
-        if (nextNode.effect?.zeroPoints && userId) {
-            const response = await fetch('/api/zeroPoints', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                }),
-            }).catch(err => console.error('Failed to zero points:', err));
-            const data = await response.json();
-            if (data.success) {
-                console.log('Points reset successfully');
-                setPoints(0);
-            }
-        }
-
-        if (nextNode.effect?.addLocation && userId) {
-            console.log('Adding location:', nextNode.effect.addLocation);
-            try {
-                const response = await fetch('/api/addLocation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId,
-                        newLocation: nextNode.effect.addLocation,
-                    }),
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    console.log('Location added successfully:', data.locations);
-                    setLocation(data.locations); // Update the state with the new locations
-                } else {
-                    console.error(
-                        'Failed to add location:',
-                        data.message || data.error,
-                    );
-                }
-            } catch (err) {
-                console.error('Error in fetch request:', err);
-            }
-        }
-
-        if (nextNode.effect?.zeroLocation && userId) {
-            const response = await fetch('/api/zeroLocation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                }),
-            }).catch(err => console.error('Failed to zero location:', err));
-            const data = await response.json();
-            if (data.success) {
-                console.log('Locations visited reset successfully');
-                setLocation([]);
-            }
-        }
-
-        if (nextNode.effect?.movePage) {
-            router.push(nextNode.effect.movePage); // Navigate to the specified page
-            return;
-        }
-
-        if (nextNode.next) {
-            setCurrentNode(nextNode.next);
-        }
-    };
-
     return (
         <div className="p-4">
             <img
@@ -261,7 +170,19 @@ function meiji_jingu() {
                     ([choice, details]) => (
                         <button
                             key={choice}
-                            onClick={() => handleChoice(choice)}
+                            onClick={() =>
+                                handleChoice(
+                                    choice,
+                                    currentNode,
+                                    setCurrentNode,
+                                    setInventory,
+                                    setPoints,
+                                    setLocation,
+                                    userId,
+                                    story,
+                                    router,
+                                )
+                            }
                             className="bg-blue-500 text-white px-4 py-2 rounded-md">
                             {choice}
                         </button>
