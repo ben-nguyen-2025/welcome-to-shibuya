@@ -7,7 +7,7 @@ export async function POST(req) {
         const connection = await mysql.createConnection({
             host: 'localhost',
             user: 'root',
-            password: 'aes112100',
+            password: 'Areadbhar3H!',
             database: 'login_data',
         });
 
@@ -17,12 +17,9 @@ export async function POST(req) {
 
         await connection.end();
 
-        return new Response(
-            JSON.stringify({ success: true, points: user.points }),
-            {
-                status: 200,
-            },
-        );
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+        });
     } catch (err) {
         console.error('Error in zeroPoints API:', err);
         return new Response(
