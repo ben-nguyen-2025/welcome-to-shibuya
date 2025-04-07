@@ -34,6 +34,27 @@ async function fetchUserPoints(userId) {
     }
 }
 
+async function fetchUserLocations(userId) {
+    const res = await fetch('/api/getLocation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+    });
+
+    const data = await res.json();
+    console.log('Response data:', data);
+
+    if (data.success) {
+        console.log('success');
+        console.log(data.locations);
+        return data.locations;
+    } else {
+        console.error('Failed to fetch points:', data.message || data.error);
+        return null;
+    }
+}
+
+
 const story = {
     start: {
         text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
@@ -106,6 +127,8 @@ function meiji_jingu() {
     const [inventory, setInventory] = useState([]);
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
+    const [location, setLocation] = useState([]);
+
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -118,6 +141,12 @@ function meiji_jingu() {
     useEffect(() => {
         fetchUserPoints(userId).then(setPoints);
     });
+
+    useEffect(() => {
+        if (userId) {
+            fetchUserLocations(userId).then(setLocation);
+        }
+    }, [userId]);
 
     const handleChoice = async choice => {
         const nextNode = story[currentNode].choices[choice];
@@ -164,6 +193,38 @@ function meiji_jingu() {
             }
         }
 
+        if (nextNode.effect?.addLocation && userId) {
+            console.log('Adding location:', nextNode.effect.addLocation);
+            try {
+                const response = await fetch('/api/addLocation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        newLocation: nextNode.effect.addLocation,
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    console.log('Location added successfully:', data.locations);
+                    setLocation(data.locations); // Update the state with the new locations
+                } else {
+                    console.error(
+                        'Failed to add location:',
+                        data.message || data.error,
+                    );
+                }
+            } catch (err) {
+                console.error('Error in fetch request:', err);
+            }
+        }
+
+        if (nextNode.effect?.movePage) {
+            router.push(nextNode.effect.movePage); // Navigate to the specified page
+            return;
+        }
+
         if (nextNode.next) {
             setCurrentNode(nextNode.next);
         }
@@ -192,6 +253,11 @@ function meiji_jingu() {
             </div>
             {/* Display inventory */}
             <div className="mt-4 p-2 border rounded-md">
+                <h2 className="font-bold">Locations Visited:</h2>
+                {location != null ? (
+                    <ul>
+                        {location.map((location, index) => (
+                            <li key={index}>📍 {location}</li>
                 <h2 className="font-bold">Inventory:</h2>
                 {inventory.length > 0 ? (
                     <ul>
