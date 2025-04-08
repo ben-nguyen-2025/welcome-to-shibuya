@@ -19,6 +19,13 @@ const story = {
         },
     },
 
+    investigate_the_base: {
+        text: "As you approach, the first thing that catches your eye is the vibrant display of colorful carp swimming at the base of the tower. There are so many that you assume it's part of some special event. Curious, you ask, and the answer surprises you. According to the locals, there are exactly 333 carp, each one symbolizing a wish for children to grow up healthy.",
+        choices: {
+            'go up the tower': { next: 'go_up_the_tower' },
+        },
+    },
+
     go_up_the_tower: {
         text: 'You enter the tower, grabbing a ticket at the kiosk. Inside, you see two paths: a spiral staircase leading toward the stars, offering a slow climb with stunning views, or a sleek elevator that promises a fast, smooth ride to the top. The choice is yours.',
         choices: {
@@ -51,7 +58,13 @@ const story = {
     exit_the_tower: {
         text: 'where will you go next?',
         choices: {
-            home: { next: 'exit_the_tower' },
+            home: {
+                next: '',
+                effect: {
+                    movePage: 'shibuya_station',
+                    determineEnding: true,
+                },
+            },
         },
     },
 };

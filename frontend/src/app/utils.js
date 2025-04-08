@@ -124,6 +124,20 @@ export const handleChoice = async (
         }
     }
 
+    if (nextNode.effect?.determineEnding && userId) {
+        const points = await fetchUserPoints(userId);
+        const locations = await fetchUserLocations(userId);
+
+        if (points != null && locations != null) {
+            const finalScore = points + locations.length * 10;
+            if (finalScore >= 50) {
+                alert('you did it! you got your phone back :)');
+            } else {
+                alert("boo you didn't get your phone back rip");
+            }
+        }
+    }
+
     if (nextNode.effect?.zeroLocation && userId) {
         const response = await fetch('/api/zeroLocation', {
             method: 'POST',

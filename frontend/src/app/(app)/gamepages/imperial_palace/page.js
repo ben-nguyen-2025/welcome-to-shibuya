@@ -70,7 +70,10 @@ const story = {
             },
             'Leave the palace': {
                 next: '',
-                effect: { movePage: 'tokyo_tower' },
+                effect: {
+                    movePage: 'tokyo_tower',
+                    addLocation: 'tokyo_tower',
+                },
             },
         },
     },
@@ -80,7 +83,7 @@ const story = {
         choices: {
             'Leave the palace': {
                 next: '',
-                effect: { movePage: 'tokyo_tower' },
+                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
             },
         },
     },
@@ -113,22 +116,6 @@ const story = {
             'Go back': { next: 'enter_temple_c' },
         },
     },
-
-    east_gate: {
-        text: 'You decide to pass through the East Gate. After walking about 100 paces, you enter a field filled with stalls selling an assortment of charms and memorabilia. At the far end of the stalls, a path leads you back to the front of Meiji Jingu.',
-        choices: {
-            'Go east': { next: 'tokyo_tower' },
-            'Go northeast': { next: 'imperial_palace' },
-        },
-    },
-
-    west_gate: {
-        text: 'Going through the West Gate, you find it leads to a side exit with a small animal petting zoo on the other side. Unfortunately, it seems there’s not much else here, you go back to the front of Meiji Jingu.',
-        choices: {
-            'Go east': { next: 'tokyo_tower' },
-            'Go northeast': { next: 'imperial_palace' },
-        },
-    },
 };
 
 function imperial_palace() {
@@ -138,7 +125,6 @@ function imperial_palace() {
     const [userId, setUserId] = useState(null);
     const [points, setPoints] = useState(null);
     const [location, setLocation] = useState([]);
-
 
     useEffect(() => {
         fetchCurrentUser().then(user => {
@@ -197,7 +183,6 @@ function imperial_palace() {
                     <ul>
                         {location.map((location, index) => (
                             <li key={index}>📍 {location}</li>
-
                         ))}
                     </ul>
                 ) : (
