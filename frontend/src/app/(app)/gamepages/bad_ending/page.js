@@ -11,14 +11,7 @@ import {
 
 const story = {
     start: {
-        text: 'after such a frantic day, exhaustion weighs heavily on you as you begin your trek back to Shibuya station. You’ve heard nothing from the station authorities all day, and the hope of finding your phone is slowly falling. With a deep breath, you ascend the escalator and approach the station booth. The employee looks up, locking eyes with you, in that instant their face brightens, and they quickly duck under the desk, emerging with a small black rectangle it’s your phone.',
-        choices: {
-            Next: { next: 'next' },
-        },
-    },
-
-    next: {
-        text: 'A surge of relief washes over you. You can’t help but break into a goofy grin, your heart lifting. You thank the guard profusely, feeling a wave of gratitude as you take the phone from their hand. Without wasting another moment, you rush to catch the train, feeling lighter than you have all day. As you settle into your seat, you can’t help but think to yourself you can’t help but think to yourself, “This has been such a great day”',
+        text: 'Feeling beaten down, tired, and drained of hope for your phone, you make your way back to Shibuya station, still clinging to a sliver of hope that it might somehow turn up. You approach the station authorities, but they simply shake their heads, confirming the sinking feeling in your chest. Without your phone and utterly exhausted, you mutter to yourself that you’ll never return to Shibuya again',
         choices: {
             'Restart?': {
                 next: '',
@@ -32,7 +25,7 @@ const story = {
     },
 };
 
-function good_ending() {
+function bad_ending() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
@@ -63,7 +56,7 @@ function good_ending() {
             <img
                 style={{ margin: 'auto', height: '60vh' }}
                 className="object-contain object-center object-top"
-                src="/goodending.png"
+                src="/badending.png"
             />
             <h1 className="text-2xl font-bold mb-4">
                 {story[currentNode].text}
@@ -115,5 +108,5 @@ function good_ending() {
     );
 }
 
-export default good_ending;
+export default bad_ending;
 // export default introPage;
