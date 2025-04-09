@@ -132,8 +132,10 @@ export const handleChoice = async (
             const finalScore = points + locations.length * 10;
             if (finalScore >= 50) {
                 alert('you did it! you got your phone back :)');
+                router.push('good_ending');
             } else {
-                alert("boo you didn't get your phone back rip");
+                alert("you couldn't find your phone :(");
+                router.push('bad_ending');
             }
         }
     }
@@ -154,6 +156,7 @@ export const handleChoice = async (
     }
 
     if (nextNode.effect?.movePage) {
+        // router.push('good_ending');
         router.push(nextNode.effect.movePage); // Navigate to the specified page
         return;
     }
