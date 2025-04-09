@@ -9,7 +9,6 @@ import {
     handleChoice,
 } from '@/app/utils';
 
-
 const story = {
     start: {
         text: "After a short walk north, something catches your eye-a massive torii gate, towering above you, it's dark wood standing in stark contrast to the bright city around it. Behind the gate, a lush forest seems to appear out of nowhere, its dense trees a surreal sight amidst the concrete jungle of Tokyo. To your left, a small sandwich shop hums with the quiet chatter of locals, and just beside it a sign welcomes visitors with a simple yet elegant message: “Welcome to Meiji Jingu”.",
@@ -52,7 +51,12 @@ const story = {
 
     walk_away: {
         text: 'After seeing the line you decide it’s not worth it to wait all that time to just see yet another dusty old temple like the hundreds of others in Shibuya alone.',
-        choices: {},
+        choices: {
+            'Go forward': {
+                next: '',
+                effect: { movePage: 'tokyo_tower', addLocation: 'tokyo_tower' },
+            },
+        },
     },
 
     enter_temple: {
@@ -77,7 +81,6 @@ const story = {
                     movePage: 'imperial_palace',
                     addLocation: 'imperial_palace',
                 },
-
             },
         },
     },
@@ -159,7 +162,8 @@ function meiji_jingu() {
     return (
         <div className="p-4">
             <img
-                className="w-full h-full inset-0 object-cover object-top"
+                style={{ margin: 'auto', height: '60vh' }}
+                className="object-contain object-center object-top"
                 src="/meiji_1.png"
             />
             <h1 className="text-2xl font-bold mb-4">

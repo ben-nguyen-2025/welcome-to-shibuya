@@ -20,10 +20,6 @@ const story = {
     check_backpack: {
         text: "From your back you swing around a large bag, searching it you find a balled up sweater, a water bottle and your wallet. You yank the hoodie out of your bag, quickly pulling it over your head. The familiar weight of the fabric settles around you, you take a deep breath and for a brief moment you can't help but feel a slight sense of comfort from the old thing.",
         choices: {
-            // 'check wallet': {
-            //     next: 'sword_collected',
-            //     effect: { addItem: 'sword' },
-            // },
             'check wallet': { next: 'check_wallet' },
         },
     },
@@ -32,7 +28,6 @@ const story = {
         choices: {
             continue: {
                 next: 'start_with_wallet',
-                effect: { addItem: '5000 yen' },
             },
         },
     },
@@ -138,10 +133,11 @@ function TextAdventure() {
     return (
         <div className="p-4">
             <img
-                className="w-full h-full inset-0 object-cover object-top"
+                style={{ margin: 'auto', height: '60vh' }}
+                className="object-contain object-center object-top"
                 src="/subway.png"
             />
-            <h1 className="text-2xl font-bold mb-4">
+            <h1 className="text-2xl text-center font-bold mb-4 ">
                 {story[currentNode].text}
             </h1>
 
