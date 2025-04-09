@@ -98,7 +98,8 @@ function tokyo_tower() {
     return (
         <div className="p-4">
             <img
-                className="w-full h-full inset-0 object-cover object-top"
+                style={{ margin: 'auto', height: '60vh' }}
+                className="object-contain object-center object-top"
                 src="/tokyo_tower.jpg"
             />
             <h1 className="text-2xl font-bold mb-4">
