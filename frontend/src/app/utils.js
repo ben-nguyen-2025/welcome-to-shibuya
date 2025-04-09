@@ -131,7 +131,6 @@ export const handleChoice = async (
         if (points != null && locations != null) {
             const finalScore = points + locations.length * 10;
             if (finalScore >= 50) {
-                alert('you did it! you got your phone back :)');
                 router.push('good_ending');
             } else {
                 alert("you couldn't find your phone :(");

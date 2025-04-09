@@ -11,22 +11,27 @@ import {
 
 const story = {
     start: {
-        text: 'Heading east from the palace you find yourself under the iconic tokyo tower in all its red and white painted glory, some say it looks like a candy cane and you have to say you definitely agree.',
+        text: 'after such a frantic day, exhaustion weighs heavily on you as you begin your trek back to Shibuya station. You’ve heard nothing from the station authorities all day, and the hope of finding your phone is slowly falling. With a deep breath, you ascend the escalator and approach the station booth. The employee looks up, locking eyes with you, in that instant their face brightens, and they quickly duck under the desk, emerging with a small black rectangle it’s your phone.',
         choices: {
-            'go up the tower': { next: 'go_up_the_tower' },
-            'investigate the base': { next: 'investigate_the_base' },
-            'head out': { next: 'exit_the_tower' },
+            Next: { next: 'next' },
         },
     },
 
-    investigate_the_base: {
-        text: "As you approach, the first thing that catches your eye is the vibrant display of colorful carp swimming at the base of the tower. There are so many that you assume it's part of some special event. Curious, you ask, and the answer surprises you. According to the locals, there are exactly 333 carp, each one symbolizing a wish for children to grow up healthy.",
+    next: {
+        text: 'A surge of relief washes over you. You can’t help but break into a goofy grin, your heart lifting. You thank the guard profusely, feeling a wave of gratitude as you take the phone from their hand. Without wasting another moment, you rush to catch the train, feeling lighter than you have all day. As you settle into your seat, you can’t help but think to yourself you can’t help but think to yourself, “This has been such a great day”',
         choices: {
-            'go up the tower': { next: 'go_up_the_tower' },
+            'Restart?': {
+                next: '',
+                effect: {
+                    movePage: 'shibuya_station',
+                    zeroPoints: true,
+                    zeroLocation: true,
+                },
+            },
         },
     },
 
-    go_up_the_tower: {
+    restart: {
         text: 'You enter the tower, grabbing a ticket at the kiosk. Inside, you see two paths: a spiral staircase leading toward the stars, offering a slow climb with stunning views, or a sleek elevator that promises a fast, smooth ride to the top. The choice is yours.',
         choices: {
             'take stairs': { next: 'went_up_stairs', effect: { addPoints: 5 } },
@@ -61,6 +66,7 @@ const story = {
             home: {
                 next: '',
                 effect: {
+                    movePage: 'shibuya_station',
                     determineEnding: true,
                 },
             },
@@ -68,7 +74,7 @@ const story = {
     },
 };
 
-function tokyo_tower() {
+function good_ending() {
     const router = useRouter();
     const [currentNode, setCurrentNode] = useState('start');
     const [inventory, setInventory] = useState([]);
@@ -97,8 +103,9 @@ function tokyo_tower() {
     return (
         <div className="p-4">
             <img
-                className="w-full h-full inset-0 object-cover object-top"
-                src="/tokyo_tower.jpg"
+                style={{ margin: 'auto', height: '60vh' }}
+                className="object-contain object-center object-top"
+                src="/goodending.png"
             />
             <h1 className="text-2xl font-bold mb-4">
                 {story[currentNode].text}
@@ -150,5 +157,5 @@ function tokyo_tower() {
     );
 }
 
-export default tokyo_tower;
+export default good_ending;
 // export default introPage;
